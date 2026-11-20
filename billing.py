@@ -1,4 +1,3 @@
-"""Parking fee calculation. Pure functions, easy to unit test."""
 import math
 from datetime import datetime
 
@@ -41,3 +40,4 @@ def duration_text(entry: datetime, exit_: datetime) -> str:
     total = int((exit_ - entry).total_seconds() // 60)
     h, m = divmod(total, 60)
     return f"{h}h {m}m"
+
