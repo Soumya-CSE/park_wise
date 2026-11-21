@@ -230,7 +230,7 @@ def register_routes(app):
         return render_template("audit.html", rows=rows)
 
 
-# ---------------------------------------------------------------- JSON API
+# ---------------------------------------------------------- JSON API
 def register_api(app):
     @app.get("/api/status")
     @login_required()
@@ -269,3 +269,5 @@ def register_api(app):
 
 if __name__ == "__main__":
     create_app().run(debug=False, host="127.0.0.1", port=5000)
+
+ 
