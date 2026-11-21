@@ -29,7 +29,7 @@ def create_app(test_config=None):
     return app
 
 
-# ---------------------------------------------------------------- security
+# ------------------------------------------------------------- security
 def register_security(app):
     @app.before_request
     def csrf_protect():
@@ -86,7 +86,7 @@ def audit(action, detail=""):
     svc.log_action(session.get("user"), action, detail, request.remote_addr)
 
 
-# ---------------------------------------------------------------- web routes
+# ------------------------------------------------------------ web routes
 def register_routes(app):
     @app.route("/login", methods=["GET", "POST"])
     def login():
