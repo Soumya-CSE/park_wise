@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="grid cols-3">
+  {% for vtype, s in summary.items() %}
+  <div class="card stat">
+    <div class="sub">{{ vtype|capitalize }} slots</div>
+    <div class="big">{{ s.free }} <span class="sub">free of {{ s.total }}</span></div>
+    <div class="sub">{{ s.occupied }} occupied · {{ s.reserved }} reserved · {{ s.maintenance }} maintenance</div>
+    {% set pct = (((s.occupied + s.reserved) * 100 // s.total) // 10 * 10) if s.total else 0 %}
+    <div class="bar"><span class="w{{ pct }}"></span></div>
+  </div>
+  {% endfor %}
+  <div class="card stat">
+    <div class="sub">Revenue today</div>
+    <div class="big">₹{{ '%.0f'|format(revenue.today_total) }}</div>
+    <div class="sub">{{ revenue.today_count }} vehicles exited</div>
+  </div>
+</div>
+
+<div class="card mt">
+  <h2>Slot map</h2>
+  <div class="legend">
+    <span><i class="dot free"></i>Free</span><span><i class="dot occupied"></i>Occupied</span>
+    <span><i class="dot reserved"></i>Reserved</span><span><i class="dot maintenance"></i>Maintenance</span>
+  </div>
+  <div class="slots">
+    {% for s in slots %}
+    <div class="slot {{ s.status }}" title="Floor {{ s.floor }} · {{ s.vehicle_type }} · {{ s.status }}">
+      {{ s.code }}<small>{{ s.vehicle_type }}</small>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="grid cols-2 mt">
+  <div class="card">
+    <h2>Currently parked ({{ parked|length }})</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Plate</th><th>Type</th><th>Slot</th><th>Since</th></tr>
+      {% for p in parked %}
+      <tr><td>{{ p.plate }}</td><td>{{ p.vehicle_type }}</td><td>{{ p.slot_code }}</td><td>{{ p.entry_time }}</td></tr>
+      {% else %}<tr><td colspan="4">No vehicles parked.</td></tr>{% endfor %}
+    </table></div>
+  </div>
+  <div class="card">
+    <h2>Revenue – last 7 days</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Date</th><th>Vehicles</th><th>Revenue</th></tr>
+      {% for d in revenue.week %}
+      <tr><td>{{ d.d }}</td><td>{{ d.n }}</td><td>₹{{ '%.0f'|format(d.total) }}</td></tr>
+      {% else %}<tr><td colspan="3">No completed sessions yet.</td></tr>{% endfor %}
+    </table></div>
+  </div>
+</div>
+{% endblock %}
