@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Smart Parking{% endblock %} · Smart Parking</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if current_user %}
+<header class="nav">
+  <span class="brand">🅿️ Smart Parking</span>
+  <a href="{{ url_for('dashboard') }}">Dashboard</a>
+  <a href="{{ url_for('entry') }}">Entry</a>
+  <a href="{{ url_for('exit_') }}">Exit &amp; Billing</a>
+  <a href="{{ url_for('reservations') }}">Reservations</a>
+  <a href="{{ url_for('history') }}">History</a>
+  {% if current_role == 'admin' %}
+  <a href="{{ url_for('admin_slots') }}">Slots</a>
+  <a href="{{ url_for('admin_audit') }}">Audit Log</a>
+  {% endif %}
+  <span class="spacer"></span>
+  <span class="who">{{ current_user }} ({{ current_role }})</span>
+  <form method="post" action="{{ url_for('logout') }}" class="inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button class="secondary small" type="submit">Logout</button>
+  </form>
+</header>
+{% endif %}
+<main>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>
