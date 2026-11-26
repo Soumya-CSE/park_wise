@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Vehicle Entry{% endblock %}
+{% block content %}
+<h1>Vehicle Entry</h1>
+<div class="grid cols-2">
+  <div class="card">
+    <form method="post" class="stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label>Plate number <input name="plate" placeholder="WB02AB1234" maxlength="14" required autofocus></label>
+      <label>Vehicle type
+        <select name="vehicle_type">
+          {% for v, s in summary.items() %}<option value="{{ v }}">{{ v|capitalize }} ({{ s.free }} free)</option>{% endfor %}
+        </select>
+      </label>
+      <button type="submit">Issue ticket</button>
+    </form>
+  </div>
+  {% if result %}
+  <div class="card">
+    <h2>Ticket issued ✔</h2>
+    <div class="ticket">
+      <div class="row"><span>Ticket</span><strong>{{ result.ticket_no }}</strong></div>
+      <div class="row"><span>Plate</span><strong>{{ result.plate }}</strong></div>
+      <div class="row"><span>Slot</span><strong>{{ result.slot }} (Floor {{ result.floor }})</strong></div>
+    </div>
+    <p class="noprint"><a class="btn secondary" href="#" id="print-btn">Print</a></p>
+  </div>
+  {% endif %}
+</div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}
