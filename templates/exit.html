@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Exit &amp; Billing{% endblock %}
+{% block content %}
+<h1>Exit &amp; Billing</h1>
+<div class="grid cols-2">
+  <div class="card">
+    <form method="post" class="stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label>Plate number <input name="plate" placeholder="WB02AB1234" maxlength="14" autofocus></label>
+      <label>…or ticket number <input name="ticket_no" placeholder="T2611062215AB12"></label>
+      <label class="check"><input type="checkbox" name="lost_ticket" value="1"> Ticket lost (penalty applies)</label>
+      <div>
+        <button type="submit" name="action" value="checkout">Check out &amp; pay</button>
+        <button type="submit" name="action" value="quote" class="secondary">Quote fee</button>
+      </div>
+    </form>
+  </div>
+  {% if quote %}
+  <div class="card">
+    <h2>Current fee estimate</h2>
+    <div class="ticket">
+      <div class="row"><span>Plate</span><strong>{{ quote.plate }}</strong></div>
+      <div class="row"><span>Parked for</span><strong>{{ quote.duration }}</strong></div>
+      <div class="row"><span>Fee so far</span><span class="amount">₹{{ '%.0f'|format(quote.fee) }}</span></div>
+    </div>
+  </div>
+  {% endif %}
+  {% if result %}
+  <div class="card">
+    <h2>Receipt ✔</h2>
+    <div class="ticket">
+      <div class="row"><span>Ticket</span><strong>{{ result.ticket_no }}</strong></div>
+      <div class="row"><span>Plate</span><strong>{{ result.plate }}</strong></div>
+      <div class="row"><span>Slot</span><strong>{{ result.slot }}</strong></div>
+      <div class="row"><span>Entry</span><strong>{{ result.entry_time }}</strong></div>
+      <div class="row"><span>Exit</span><strong>{{ result.exit_time }}</strong></div>
+      <div class="row"><span>Duration</span><strong>{{ result.duration }}</strong></div>
+      <div class="row"><span>Amount paid</span><span class="amount">₹{{ '%.0f'|format(result.fee) }}</span></div>
+    </div>
+    <p class="noprint"><a class="btn secondary" href="#" id="print-btn">Print receipt</a></p>
+  </div>
+  {% endif %}
+</div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}
