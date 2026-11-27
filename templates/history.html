@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+{% block content %}
+<h1>Parking History</h1>
+<form method="get" class="stack search">
+  <input name="q" value="{{ q }}" placeholder="Search by plate">
+  <button type="submit">Search</button>
+</form>
+<div class="card table-wrap"><table>
+  <tr><th>Ticket</th><th>Plate</th><th>Type</th><th>Slot</th><th>Entry</th><th>Exit</th><th>Fee</th></tr>
+  {% for r in rows %}
+  <tr>
+    <td>{{ r.ticket_no }}</td><td>{{ r.plate }}</td><td>{{ r.vehicle_type }}</td><td>{{ r.slot_code }}</td>
+    <td>{{ r.entry_time }}</td><td>{{ r.exit_time or '— parked —' }}</td>
+    <td>{% if r.fee is not none %}₹{{ '%.0f'|format(r.fee) }}{% else %}—{% endif %}</td>
+  </tr>
+  {% else %}<tr><td colspan="7">No records.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}
