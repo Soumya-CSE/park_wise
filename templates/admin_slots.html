@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Manage Slots{% endblock %}
+{% block content %}
+<h1>Manage Slots</h1>
+<div class="grid cols-2">
+  <div class="card">
+    <h2>Add slot</h2>
+    <form method="post" class="stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="action" value="add">
+      <label>Code <input name="code" placeholder="C3-01" maxlength="10" required></label>
+      <label>Floor <input type="number" name="floor" value="1" min="0" max="20"></label>
+      <label>Vehicle type
+        <select name="vehicle_type"><option value="bike">Bike</option><option value="car">Car</option><option value="truck">Truck</option></select>
+      </label>
+      <button type="submit">Add slot</button>
+    </form>
+  </div>
+  <div class="card table-wrap">
+    <h2>All slots ({{ slots|length }})</h2>
+    <table>
+      <tr><th>Code</th><th>Floor</th><th>Type</th><th>Status</th><th></th></tr>
+      {% for s in slots %}
+      <tr>
+        <td>{{ s.code }}</td><td>{{ s.floor }}</td><td>{{ s.vehicle_type }}</td>
+        <td><span class="badge {{ s.status }}">{{ s.status }}</span></td>
+        <td>
+          {% if s.status == 'free' or s.status == 'maintenance' %}
+          <form method="post" class="inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <input type="hidden" name="slot_id" value="{{ s.id }}">
+            <input type="hidden" name="action" value="{{ 'maintenance_off' if s.status == 'maintenance' else 'maintenance_on' }}">
+            <button class="secondary small" type="submit">{{ 'Re-open' if s.status == 'maintenance' else 'Maintenance' }}</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}
